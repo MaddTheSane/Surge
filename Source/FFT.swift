@@ -20,6 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+import Accelerate
+
+#if os(iOS)
+	private let vDSP_create_fftsetupD = create_fftsetupD
+	private let vDSP_fft_zipD = fft_zipD
+	private let vDSP_vsmulD = vsmulD
+#endif
+
 public func fft(input: [Double]) -> [Double] {
     var real = [Double](input)
     var imaginary = [Double](count: input.count, repeatedValue: 0.0)

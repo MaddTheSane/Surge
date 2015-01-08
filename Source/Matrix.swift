@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+import Accelerate
+ 
 public struct Matrix {
     let rows: Int
     let columns: Int
@@ -141,6 +143,10 @@ public func inv(x : Matrix) -> Matrix {
     
     return results
 }
+
+#if os(iOS)
+	private let vDSP_mtransD = mtransD
+#endif
 
 public func transpose(x: Matrix) -> Matrix {
     var results = Matrix(rows: x.columns, columns: x.rows, repeatedValue: 0.0)

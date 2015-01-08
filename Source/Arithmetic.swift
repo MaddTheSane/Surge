@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+import Accelerate
+
 public func sum(x: [Double]) -> Double {
     return cblas_dasum(Int32(x.count), x, 1)
 }
@@ -44,6 +46,10 @@ public func add(x: [Double], y: [Double]) -> [Double] {
 
     return results
 }
+
+#if os(iOS)
+	private let vDSP_vmulD = vmulD
+#endif
 
 public func mul(x: [Double], y: [Double]) -> [Double] {
     var results = [Double](count: x.count, repeatedValue: 0.0)
