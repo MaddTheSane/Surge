@@ -55,6 +55,12 @@ _The infrastructure and best practices for distributing Swift libraries are curr
 ### Arithmetic
 
 - `sum`
+- `asum`
+- `max`
+- `min`
+- `mean`
+- `meamg`
+- `measq`
 - `add`
 - `mul`
 - `div`
@@ -140,14 +146,6 @@ let product = Surge.mul(a, b) // [2.0, 12.0, 30.0, 56.0]
 ```
 
 ---
-
-## Contact
-
-Mattt Thompson
-
-- http://github.com/mattt
-- http://twitter.com/mattt
-- m@mattt.me
 
 ## License
 

@@ -1,6 +1,6 @@
 // FFT.swift
 //
-// Copyright (c) 2014 Mattt Thompson (http://mattt.me)
+// Copyright (c) 2014–2015 Mattt Thompson (http://mattt.me)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,39 @@ import Accelerate
 
 #if os(iOS)
 	private let vDSP_create_fftsetupD = create_fftsetupD
+	private let vDSP_destroy_fftsetupD = destroy_fftsetupD
 	private let vDSP_fft_zipD = fft_zipD
 	private let vDSP_vsmulD = vsmulD
+	
+	private let vDSP_create_fftsetup = create_fftsetup
+	private let vDSP_destroy_fftsetup = destroy_fftsetup
+	private let vDSP_fft_zip = fft_zip
+	private let vDSP_vsmul = vsmul
+
 #endif
+
+// MARK: Fast Fourier Transform
+
+public func fft(input: [Float]) -> [Float] {
+    var real = [Float](input)
+    var imaginary = [Float](count: input.count, repeatedValue: 0.0)
+    var splitComplex = DSPSplitComplex(realp: &real, imagp: &imaginary)
+
+    let length = vDSP_Length(floor(log2(Float(input.count))))
+    let radix = FFTRadix(kFFTRadix2)
+    let weights = vDSP_create_fftsetup(length, radix)
+    vDSP_fft_zip(weights, &splitComplex, 1, length, FFTDirection(FFT_FORWARD))
+
+    var magnitudes = [Float](count: input.count, repeatedValue: 0.0)
+    vDSP_zvmags(&splitComplex, 1, &magnitudes, 1, vDSP_Length(input.count))
+
+    var normalizedMagnitudes = [Float](count: input.count, repeatedValue: 0.0)
+    vDSP_vsmul(sqrt(magnitudes), 1, [2.0 / Float(input.count)], &normalizedMagnitudes, 1, vDSP_Length(input.count))
+
+    vDSP_destroy_fftsetup(weights)
+
+    return normalizedMagnitudes
+}
 
 public func fft(input: [Double]) -> [Double] {
     var real = [Double](input)
@@ -43,6 +73,8 @@ public func fft(input: [Double]) -> [Double] {
 
     var normalizedMagnitudes = [Double](count: input.count, repeatedValue: 0.0)
     vDSP_vsmulD(sqrt(magnitudes), 1, [2.0 / Double(input.count)], &normalizedMagnitudes, 1, vDSP_Length(input.count))
+
+    vDSP_destroy_fftsetupD(weights)
 
     return normalizedMagnitudes
 }
