@@ -144,10 +144,13 @@ public func add(x: [Double], y: [Double]) -> [Double] {
     return results
 }
 
-#if os(iOS)
+#if os(iOS) && arch(i386)
+	//These defines are needed because the iOS simulator for 32-bit somehow has some Accelerate functions different than everything else
+	//TODO: find out *why* they show up differently
 	private let vDSP_vmulD = vmulD
 	private let vDSP_vmul = vmul
 #endif
+
 // MARK: Multiply
 
 public func mul(x: [Float], y: [Float]) -> [Float] {
@@ -228,12 +231,14 @@ public func sqrt(x: [Double]) -> [Double] {
     return results
 }
 
-// MARK: Dot Product
-
-#if os(iOS)
+#if os(iOS) && arch(i386)
+	//These defines are needed because the iOS simulator for 32-bit somehow has some Accelerate functions different than everything else
+	//TODO: find out *why* they show up differently
 	private let vDSP_dotpr = dotpr
 	private let vDSP_dotprD = dotprD
 #endif
+
+// MARK: Dot Product
 
 public func dot(x: [Float], y: [Float]) -> Float {
     precondition(x.count == y.count, "Vectors must have equal count")

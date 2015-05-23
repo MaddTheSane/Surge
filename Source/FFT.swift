@@ -22,7 +22,9 @@
 
 import Accelerate
 
-#if os(iOS)
+#if os(iOS) && arch(i386)
+	//These defines are needed because the iOS simulator for 32-bit somehow has some Accelerate functions different than everything else
+	//TODO: find out *why* they show up differently
 	private let vDSP_create_fftsetupD = create_fftsetupD
 	private let vDSP_destroy_fftsetupD = destroy_fftsetupD
 	private let vDSP_fft_zipD = fft_zipD
@@ -32,7 +34,6 @@ import Accelerate
 	private let vDSP_destroy_fftsetup = destroy_fftsetup
 	private let vDSP_fft_zip = fft_zip
 	private let vDSP_vsmul = vsmul
-
 #endif
 
 // MARK: Fast Fourier Transform

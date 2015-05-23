@@ -202,7 +202,9 @@ public func inv(x : Matrix<Double>) -> Matrix<Double> {
     return results
 }
 
-#if os(iOS)
+#if os(iOS) && arch(i386)
+	//These defines are needed because the iOS simulator for 32-bit somehow has some Accelerate functions different than everything else
+	//TODO: find out *why* they show up differently
 	private let vDSP_mtransD = mtransD
 	private let vDSP_mtrans = mtrans
 #endif
